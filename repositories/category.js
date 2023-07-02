@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const userSchema = new Schema(
+const categorySchema = new Schema(
   {
     name: {
       type: String,
@@ -13,6 +13,6 @@ const userSchema = new Schema(
   }
 );
 
-const User = mongoose.model("User", userSchema);
+const Category = mongoose.model("Category", categorySchema);
 
-module.exports = User;
+module.exports = Category;
