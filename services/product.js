@@ -9,27 +9,27 @@ module.exports = {
 };
 
 async function fetchProducts(req, res) {
-  const products = await Product.find().populate(["categories", "images"]);
+  const products = await Product.find().populate("categories");
   res.json(products);
 }
 
 async function fetchProductById(req, res) {
   const { id } = req.params;
-  const product = await Product.findById(id).populate(["categories", "images"]);
+  const product = await Product.findById(id).populate("categories");
   res.json(product);
 }
 
 async function createProduct(req, res) {
-  const product = await Product.create(req.body);
+  const { _id } = await Product.create(req.body);
+  const product = await Product.findById(_id).populate("categories");
   res.json(product);
 }
 
 async function updateProduct(req, res) {
   const { id } = req.params;
-  const product = await Product.findByIdAndUpdate(id, req.body).populate([
-    "categories",
-    "images",
-  ]);
+  const product = await Product.findByIdAndUpdate(id, req.body).populate(
+    "categories"
+  );
   res.json(product);
 }
 
