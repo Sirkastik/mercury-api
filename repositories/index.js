@@ -1,9 +1,28 @@
+require("firebase/storage"); // must be required for this to work
+global.XMLHttpRequest = require("xhr2"); // must be used to avoid bug
 const firebase = require("firebase");
 const mongoose = require("mongoose");
+const _ = require("lodash");
+
+const firebaseConfig = _.mapKeys(
+  _.pick(process.env, [
+    "API_KEY",
+    "AUTH_DOMAIN",
+    "PROJECT_ID",
+    "STORAGE_BUCKET",
+    "MESSAGING_SENDER_ID",
+    "APP_ID",
+  ]),
+  (_value, key) => _.camelCase(key)
+);
+
+const firebaseApp = firebase.initializeApp(firebaseConfig);
+
+const Storage = firebaseApp.storage().ref();
 
 module.exports = {
+  Storage,
   setup,
-  getFirebase,
 };
 
 function setup() {
@@ -16,26 +35,5 @@ function setup() {
 
   connection.once("open", function () {
     console.log("MongoDB database connection established successfully");
-  });
-}
-
-function getFirebase() {
-  const {
-    API_KEY,
-    AUTH_DOMAIN,
-    PROJECT_ID,
-    STORAGE_BUCKET,
-    MESSAGING_SENDER_ID,
-    APP_ID,
-  } = process.env;
-
-
-  return firebase.initializeApp({
-    apiKey: API_KEY,
-    authDomain: AUTH_DOMAIN,
-    projectId: PROJECT_ID,
-    storageBucket: STORAGE_BUCKET,
-    messagingSenderId: MESSAGING_SENDER_ID,
-    appId: APP_ID,
   });
 }
