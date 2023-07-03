@@ -22,4 +22,4 @@ router.put(
 
 router.delete("/:id", CategoryService.deleteCategory);
 
-module.exports = router;
+module.exports = { router };

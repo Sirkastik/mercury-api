@@ -22,4 +22,4 @@ router.put(
 
 router.delete("/:id", ProductService.deleteProduct);
 
-module.exports = router;
+module.exports = { router };

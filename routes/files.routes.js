@@ -17,10 +17,6 @@ router.post("/upload", uploadOne, uploadSingle);
 
 router.post("/uploads", uploadMany, uploadMultiple);
 
-router.delete("/:fileName", async (req, res) => {
-//   const fileName = src.split("?")[0].split("/o/")[1].replace("%2F", "/");
-  await deleteFile(req.params.fileName);
-  res.status(204).end();
-});
+router.delete("/:fileName", deleteFile);
 
-module.exports = router;
+module.exports = { router };

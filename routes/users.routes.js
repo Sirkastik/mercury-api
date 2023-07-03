@@ -13,4 +13,4 @@ router.put("/:id", UserService.updateUser);
 
 router.delete("/:id", UserService.deleteUser);
 
-module.exports = router;
+module.exports = { router };

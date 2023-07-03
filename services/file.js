@@ -31,10 +31,13 @@ async function uploadFile(file) {
     contentType: file.mimetype,
   });
   const src = await snapshot.ref.getDownloadURL();
-  return { src }
+  return { src };
 }
 
-async function deleteFile(fileName) {
+async function deleteFile(req, res) {
+  //   const fileName = src.split("?")[0].split("/o/")[1].replace("%2F", "/");
+  const { fileName } = req.params;
   const fileRef = storage.child(fileName);
   await fileRef.delete();
+  res.status(204).end();
 }
