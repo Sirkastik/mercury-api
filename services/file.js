@@ -21,8 +21,7 @@ async function uploadMultiple(req, res) {
 async function deleteFile(req, res) {
   //   const fileName = decodeURIComponent(src.split("?")[0].split("/o/")[1])
   const { fileName } = req.params;
-  const fileRef = Storage.child(fileName);
-  await fileRef.delete();
+  await Storage.file(fileName).delete();
   res.status(204).end();
 }
 
