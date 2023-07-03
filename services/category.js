@@ -21,7 +21,7 @@ async function fetchCategoryById(req, res) {
 
 async function createCategory(req, res) {
   const category = await Category.create(req.body);
-  res.json(category);
+  res.status(201).json(category);
 }
 
 async function updateCategory(req, res) {
@@ -33,5 +33,5 @@ async function updateCategory(req, res) {
 async function deleteCategory(req, res) {
   const { id } = req.params;
   await Category.findByIdAndDelete(id);
-  res.json({ success: true });
+  res.status(204).end();
 }

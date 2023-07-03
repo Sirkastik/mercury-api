@@ -22,7 +22,7 @@ async function fetchProductById(req, res) {
 async function createProduct(req, res) {
   const { _id } = await Product.create(req.body);
   const product = await Product.findById(_id).populate("categories");
-  res.json(product);
+  res.status(201).json(product);
 }
 
 async function updateProduct(req, res) {
@@ -36,5 +36,5 @@ async function updateProduct(req, res) {
 async function deleteProduct(req, res) {
   const { id } = req.params;
   await Product.findByIdAndDelete(id);
-  res.json({ success: true });
+  res.status(204).end();
 }

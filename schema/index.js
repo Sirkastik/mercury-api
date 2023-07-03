@@ -14,10 +14,25 @@ const updateProduct = Joi.object({
   images: Joi.array().items(Joi.string()),
 });
 
+const productSchema = {
+  create: createProduct,
+  update: updateProduct,
+}
+
+const createCategory = Joi.object({
+  name: Joi.string().min(3).max(30).required(),
+  image: Joi.string(),
+});
+
+const categorySchema = {
+  create: createCategory,
+  update: createCategory,
+}
+
 module.exports = {
   validateSchema,
-  createProduct,
-  updateProduct,
+  productSchema,
+  categorySchema,
 };
 
 function validateSchema(schema) {
