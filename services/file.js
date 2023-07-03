@@ -18,22 +18,28 @@ async function uploadMultiple(req, res) {
   res.status(200).json(images);
 }
 
-async function uploadFile(file) {
-  const timestamp = Date.now();
-  const [name, type] = file.originalname.split(".");
-  const fileName = `images/${name}_${timestamp}.${type}`;
-  const fileRef = Storage.child(fileName);
-  const snapshot = await fileRef.put(file.buffer, {
-    contentType: file.mimetype,
-  });
-  const src = await snapshot.ref.getDownloadURL();
-  return { src };
-}
-
 async function deleteFile(req, res) {
-  //   const fileName = src.split("?")[0].split("/o/")[1].replace("%2F", "/");
+  //   const fileName = decodeURIComponent(src.split("?")[0].split("/o/")[1])
   const { fileName } = req.params;
   const fileRef = Storage.child(fileName);
   await fileRef.delete();
   res.status(204).end();
+}
+
+async function uploadFile(file) {
+  const timestamp = Date.now();
+  const [name, type] = file.originalname.split(".");
+  const fileName = `images/${name}_${timestamp}.${type}`;
+  const cloudFile = Storage.file(fileName);
+  await cloudFile.save(file.buffer, {
+    contentType: file.mimetype,
+  });
+  const src = createImageUrl(fileName);
+  return { src };
+}
+
+function createImageUrl(fileName) {
+  const [_, bucket] = process.env.STORAGE_BUCKET.split("//");
+  const filePath = encodeURIComponent(fileName);
+  return `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${filePath}?alt=media`;
 }

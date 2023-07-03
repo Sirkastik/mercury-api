@@ -1,24 +1,15 @@
-require("firebase/storage"); // must be required for this to work
-global.XMLHttpRequest = require("xhr2"); // must be used to avoid bug
-const firebase = require("firebase");
 const mongoose = require("mongoose");
-const _ = require("lodash");
+const { initializeApp, cert } = require("firebase-admin/app");
+const { getStorage } = require("firebase-admin/storage");
 
-const firebaseConfig = _.mapKeys(
-  _.pick(process.env, [
-    "API_KEY",
-    "AUTH_DOMAIN",
-    "PROJECT_ID",
-    "STORAGE_BUCKET",
-    "MESSAGING_SENDER_ID",
-    "APP_ID",
-  ]),
-  (_value, key) => _.camelCase(key)
-);
+const serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT)
 
-const firebaseApp = firebase.initializeApp(firebaseConfig);
+const app = initializeApp({
+  credential: cert(serviceAccount),
+  storageBucket: process.env.STORAGE_BUCKET,
+});
 
-const Storage = firebaseApp.storage().ref();
+const Storage = getStorage(app).bucket();
 
 module.exports = {
   Storage,
