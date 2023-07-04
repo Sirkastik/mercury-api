@@ -2,10 +2,8 @@ const mongoose = require("mongoose");
 const { initializeApp, cert } = require("firebase-admin/app");
 const { getStorage } = require("firebase-admin/storage");
 
-const serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT)
-
 const app = initializeApp({
-  credential: cert(serviceAccount),
+  credential: cert(JSON.parse(process.env.SERVICE_ACCOUNT)),
   storageBucket: process.env.STORAGE_BUCKET,
 });
 

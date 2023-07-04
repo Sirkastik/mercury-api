@@ -4,19 +4,17 @@ const {
   uploadSingle,
   uploadMultiple,
   deleteFile,
-} = require("../services/file");
+} = require("../services/file-manager");
 
 const router = Router();
 
 // Setting up multer as a middleware to grab photo uploads
 const storage = multer.memoryStorage();
-const uploadOne = multer({ storage }).single("file");
-const uploadMany = multer({ storage }).array("files");
 // POST - Add Image to Cloud Storage
-router.post("/upload", uploadOne, uploadSingle);
+router.post("/upload", multer({ storage }).single("file"), uploadSingle);
 
-router.post("/uploads", uploadMany, uploadMultiple);
+router.post("/uploads", multer({ storage }).array("files"), uploadMultiple);
 
 router.delete("/:fileName", deleteFile);
 
-module.exports = { router };
+module.exports = () => ({ router });

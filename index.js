@@ -1,7 +1,9 @@
 require("dotenv").config();
-require("./repositories").setup();
+require("./adapters").setup();
 const express = require("express");
 const cors = require("cors");
+const entities = require("./api");
+const { createRouter } = require("./utils/router");
 
 const app = express();
 
@@ -18,7 +20,9 @@ app.use(
 
 app.get("/", (req, res) => res.send("WELCOME TO MERCURY API!"));
 
-app.use("/api", require("./routes"));
+entities.forEach((entity) => {
+  app.use(`/api/${entity.name}`, createRouter(entity));
+});
 
 app.use((req, res) => res.status(404).json({ message: "Invalid endpoint" }));
 

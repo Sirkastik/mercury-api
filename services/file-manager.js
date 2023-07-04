@@ -1,4 +1,4 @@
-const { Storage } = require("../repositories");
+const { Storage } = require("../adapters");
 
 module.exports = {
   uploadSingle,
@@ -8,18 +8,15 @@ module.exports = {
 
 async function uploadSingle(req, res) {
   const image = await uploadFile(req.file);
-
   res.status(200).json(image);
 }
 
 async function uploadMultiple(req, res) {
   const images = await Promise.all(req.files.map(uploadFile));
-
   res.status(200).json(images);
 }
 
 async function deleteFile(req, res) {
-  //   const fileName = decodeURIComponent(src.split("?")[0].split("/o/")[1])
   const { fileName } = req.params;
   await Storage.file(fileName).delete();
   res.status(204).end();
@@ -29,8 +26,7 @@ async function uploadFile(file) {
   const timestamp = Date.now();
   const [name, type] = file.originalname.split(".");
   const fileName = `images/${name}_${timestamp}.${type}`;
-  const cloudFile = Storage.file(fileName);
-  await cloudFile.save(file.buffer, {
+  await Storage.file(fileName).save(file.buffer, {
     contentType: file.mimetype,
   });
   const src = createImageUrl(fileName);
