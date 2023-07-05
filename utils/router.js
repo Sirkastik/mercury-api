@@ -10,24 +10,17 @@ function createRouter(entity) {
   const Repo = createRepo(entity);
   const schema = createSchema(entity);
   return Router()
-    .get("/", async (req, res) => {
-      const result = await Repo.find();
-      res.json(result);
-    })
-    .get("/:id", async (req, res) => {
-      const result = await Repo.findById(req.param.id);
-      res.json(result);
-    })
-    .post("/", validate(schema), async (req, res) => {
-      const result = await Repo.create(req.body);
-      res.json(result);
-    })
-    .put("/:id", validate(schema), async (req, res) => {
-      const result = await Repo.findByIdAndUpdate(req.params.id, req.body);
-      res.json(result);
-    })
-    .delete("/:id", async (req, res) => {
-      await Repo.findByIdAndDelete(req.params.id);
-      res.status(201);
-    });
+    .get("/", async (req, res) => Repo.find().then((e) => res.json(e)))
+    .get("/:id", async (req, res) =>
+      Repo.findById(req.param.id).then((e) => res.json(e))
+    )
+    .post("/", validate(schema), async (req, res) =>
+      Repo.create(req.body).then((e) => res.json(e))
+    )
+    .put("/:id", validate(schema), async (req, res) =>
+      Repo.findByIdAndUpdate(req.params.id, req.body).then((e) => res.json(e))
+    )
+    .delete("/:id", async (req, res) =>
+      Repo.findByIdAndDelete(req.params.id).then(() => res.status(201).send())
+    );
 }

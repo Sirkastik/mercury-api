@@ -7,18 +7,7 @@ function createRepo(entity) {
   const schemaDefinition = Object.entries(entity.schema)
     .map(([key, field]) => {
       const { type: typeDef, isArray, required, ref } = field.type;
-      let type = String;
-      switch (typeDef) {
-        case "string":
-          type = String;
-          break;
-        case "number":
-          type = Number;
-          break;
-        default:
-          break;
-      }
-      ref && (type = mongoose.SchemaTypes.ObjectId);
+      const type = getType(ref || typeDef);
       const typeObj = {
         type,
         ...(required && { required }),
@@ -33,4 +22,17 @@ function createRepo(entity) {
       timestamps: true,
     })
   );
+}
+
+function getType(typeDef) {
+  switch (typeDef) {
+    case "string":
+      return String;
+    case "number":
+      return Number;
+    case "boolean":
+      return Boolean;
+    default:
+      return mongoose.SchemaTypes.ObjectId;
+  }
 }

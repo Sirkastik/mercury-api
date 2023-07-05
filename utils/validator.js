@@ -7,11 +7,19 @@ function createSchema(entity) {
     Object.entries(entity.schema)
       .map(([key, field]) => {
         const { type, isArray, required } = field.type;
-        const typeDef = isArray ? Joi.array().items(Joi[type]()) : Joi[type]();
-        return { [key]: required ? typeDef.required() : typeDef };
+        const schema = withRequired(getType(type, isArray), required);
+        return { [key]: schema };
       })
       .reduce((o, field) => ({ ...o, ...field }), {})
   );
+}
+
+function getType(type, isArray) {
+  return isArray ? Joi.array().items(Joi[type]()) : Joi[type]();
+}
+
+function withRequired(type, required) {
+  return required ? type.required() : type;
 }
 
 function schemer() {
