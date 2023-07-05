@@ -2,20 +2,18 @@ const Joi = require("joi");
 
 module.exports = { createSchema, schemer };
 
-function createSchema(entity) {
+function createSchema({ fields }) {
   return Joi.object(
-    Object.entries(entity.schema)
-      .map(([key, field]) => {
-        const { type, isArray, required } = field.type;
-        const schema = withRequired(getType(type, isArray), required);
-        return { [key]: schema };
+    fields
+      .map(({ name, type, array, required }) => {
+        return { [name]: withRequired(getType(type, array), required) };
       })
       .reduce((o, field) => ({ ...o, ...field }), {})
   );
 }
 
-function getType(type, isArray) {
-  return isArray ? Joi.array().items(Joi[type]()) : Joi[type]();
+function getType(type, array) {
+  return array ? Joi.array().items(Joi[type]()) : Joi[type]();
 }
 
 function withRequired(type, required) {
@@ -25,7 +23,7 @@ function withRequired(type, required) {
 function schemer() {
   const schema = {
     type: "string",
-    isArray: false,
+    array: false,
     required: false,
     ref: null,
   };
@@ -41,6 +39,18 @@ function schemer() {
       schema.type = "number";
       return this;
     },
+    boolean() {
+      schema.type = "boolean";
+      return this;
+    },
+    date() {
+      schema.type = "date";
+      return this;
+    },
+    object() {
+      schema.type = "object";
+      return this;
+    },
     ref(scheme) {
       schema.ref = scheme;
       return this;
@@ -50,7 +60,7 @@ function schemer() {
       return this;
     },
     array() {
-      schema.isArray = true;
+      schema.array = true;
       return this;
     },
   };

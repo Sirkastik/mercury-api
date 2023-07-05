@@ -1,22 +1,17 @@
+const { Router } = require("express");
 const fs = require("fs");
 const path = require("path");
-const { schemer } = require("../utils/validator");
 
-module.exports = getEntities;
+const router = Router();
 
-async function getEntities() {
-  return new Promise((resolve, reject) => {
-    fs.readdir(__dirname, (err, files) => {
-      const entities = files
-        .filter(
-          (filename) => !filename.includes("index") && filename.endsWith(".js")
-        )
-        .map((filename) => {
-          const name = filename.split(".")[0];
-          const schema = require(path.join(__dirname, filename))(schemer);
-          return { name, schema };
-        });
-      resolve(entities);
-    });
+fs.readdirSync(__dirname)
+  .filter((filename) => !filename.includes("index") && filename.endsWith(".js"))
+  .forEach((filename) => {
+    const routeNode = require(path.join(__dirname, filename));
+    router.use(
+      `/${routeNode.resource || filename.split(".")[0]}`,
+      routeNode.router
+    );
   });
-}
+
+module.exports = router;

@@ -3,21 +3,19 @@ const { Schema } = mongoose;
 
 module.exports = { createRepo };
 
-function createRepo(entity) {
-  const schemaDefinition = Object.entries(entity.schema)
-    .map(([key, field]) => {
-      const { type: typeDef, isArray, required, ref } = field.type;
-      const type = getType(ref || typeDef);
-      const typeObj = {
-        type,
+function createRepo({ name, fields }) {
+  const schemaDefinition = fields
+    .map(({ name, type, array, required, ref }) => {
+      const o = {
+        type: getType(ref || type),
         ...(required && { required }),
         ...(ref && { ref }),
       };
-      return { [key]: isArray ? [typeObj] : typeObj };
+      return { [name]: array ? [o] : o };
     })
     .reduce((o, field) => ({ ...o, ...field }), {});
   return mongoose.model(
-    entity.name,
+    name,
     new Schema(schemaDefinition, {
       timestamps: true,
     })
@@ -32,6 +30,10 @@ function getType(typeDef) {
       return Number;
     case "boolean":
       return Boolean;
+    case "date":
+      return Date;
+    case "object":
+      return Object;
     default:
       return mongoose.SchemaTypes.ObjectId;
   }

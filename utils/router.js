@@ -5,10 +5,9 @@ const { validate } = require("../middleware/validate");
 
 module.exports = { createRouter };
 
-function createRouter(entity) {
-  if (entity.schema.hasOwnProperty("router")) return entity.schema.router;
-  const Repo = createRepo(entity);
-  const schema = createSchema(entity);
+function createRouter(resource) {
+  const Repo = createRepo(resource);
+  const schema = createSchema(resource);
   return Router()
     .get("/", async (req, res) => Repo.find().then((e) => res.json(e)))
     .get("/:id", async (req, res) =>

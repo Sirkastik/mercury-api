@@ -17,4 +17,4 @@ router.post("/uploads", multer({ storage }).array("files"), uploadMultiple);
 
 router.delete("/:fileName", deleteFile);
 
-module.exports = () => ({ router });
+module.exports = { router };
