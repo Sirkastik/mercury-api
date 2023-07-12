@@ -14,18 +14,15 @@ module.exports = {
   setup,
 };
 
-async function setup() {
-  return new Promise((resolve, reject) => {
-    mongoose.connect(process.env.MONGO_URI, {
-      useUnifiedTopology: true,
-      useNewUrlParser: true,
-    });
+function setup() {
+  mongoose.connect(process.env.MONGO_URI, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+  });
 
-    const connection = mongoose.connection;
+  const connection = mongoose.connection;
 
-    connection.once("open", function () {
-      console.log("MongoDB database connection established successfully");
-      resolve();
-    });
+  connection.once("open", function () {
+    console.log("MongoDB database connection established successfully");
   });
 }
