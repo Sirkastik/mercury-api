@@ -2,7 +2,7 @@ const _ = require("lodash");
 const { Router } = require("express");
 const { kv } = require("@vercel/kv");
 const { createId } = require("@paralleldrive/cuid2");
-
+const { validate, resourceSchema } = require("../middleware/validate");
 const { fetchResources } = require("../adapters/resources");
 
 const router = Router();
@@ -12,7 +12,7 @@ router.get("/", async (req, res) => {
   res.json(resources);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", validate(resourceSchema), async (req, res) => {
   const id = createId();
   const resource = { ...req.body, id };
   const idsResponse = await kv.get("sys_resources_ids");
@@ -24,14 +24,14 @@ router.post("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   const resource = await kv.get(`sys_resources_${id}`);
-  if (!resource) res.status(404).json({ error: "Resource not found" })
+  if (!resource) res.status(404).json({ error: "Resource not found" });
   res.json(resource);
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", validate(resourceSchema), async (req, res) => {
   const { id } = req.params;
   const resource = await kv.get(`sys_resources_${id}`);
-  if (!resource) res.status(404).json({ error: "Resource not found" })
+  if (!resource) res.status(404).json({ error: "Resource not found" });
   await saveResource({ ..._.merge(req.body, resource), id });
   res.json(resource);
 });
