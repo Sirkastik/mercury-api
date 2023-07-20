@@ -1,4 +1,4 @@
-const { Storage } = require("../adapters");
+const { Storage } = require("../../adapters/firebase");
 
 module.exports = {
   uploadSingle,

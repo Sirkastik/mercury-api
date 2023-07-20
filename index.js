@@ -1,12 +1,12 @@
 require("dotenv").config();
-require("./adapters").setup();
+require("./adapters/mongoose").connect();
 const express = require("express");
 const cors = require("cors");
-const { createRouter } = require("./utils/router");
-const { fetchResources } = require("./adapters/resources");
+const { createOrgRouter } = require("./utils/router");
+const resourceService = require("./cases/resource");
 
 (async () => {
-  const resources = await fetchResources();
+  const resources = await resourceService.getResources();
 
   const app = express();
 
@@ -24,15 +24,24 @@ const { fetchResources } = require("./adapters/resources");
   );
 
   app.use((req, res, next) => {
-    console.log(req.origin, req.method, req.path);
+    console.log(req.method, req.path);
     next();
   });
 
   app.get("/", (req, res) => res.send("WELCOME TO MERCURY API!"));
 
-  app.use("/api", require("./api"));
+  app.use("/api/mercury", require("./api"));
 
-  resources.forEach((r) => app.use(`/api/${r.name}`, createRouter(r)));
+  const organizations = [
+    {
+      name: "mercury",
+      resources,
+    },
+  ];
+
+  for (const org of organizations) {
+    app.use("/api", createOrgRouter(org));
+  }
 
   app.use(async (req, res) =>
     res.status(404).json({ message: "Invalid endpoint" })

@@ -4,6 +4,8 @@ const { Schema } = mongoose;
 module.exports = { createRepo };
 
 function createRepo({ name, fields }) {
+  const repo = mongoose.models[name]
+  if (repo) return repo;
   const schemaDefinition = fields
     .map(({ name, type, array, required, ref }) => {
       const o = {

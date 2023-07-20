@@ -4,7 +4,7 @@ const {
   uploadSingle,
   uploadMultiple,
   deleteFile,
-} = require("../services/file-manager");
+} = require("../services/files");
 
 const router = Router();
 

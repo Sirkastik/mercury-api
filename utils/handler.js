@@ -11,7 +11,7 @@ module.exports = {
 
 /**
  * A repo is a mongoose model
- * @typedef {Model<any, {}, {}, {}, any, Schema<any, Model<any, any, any, any, any, any>, {}, {}, {}, {}, {timestamps: true;}, any, Document<unknown, {}, FlatRecord<any>> & Omit<>>>} Repo
+ * @typedef {Model<any, {}, {}, {}, any, any>} Repo
  */
 
 /**
