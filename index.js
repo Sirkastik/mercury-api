@@ -3,7 +3,7 @@ require("./adapters/mongoose").connect();
 const express = require("express");
 const cors = require("cors");
 const { createOrgRouter } = require("./utils/router");
-const resourceService = require("./cases/resource");
+const resourceService = require("./services/resource");
 
 (async () => {
   const resources = await resourceService.getResources();

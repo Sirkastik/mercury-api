@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const resourceService = require("../cases/resource");
+const resourceService = require("../services/resource");
 const { createRepo } = require("../utils/repo");
 
 const router = Router();
